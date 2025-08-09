@@ -1,10 +1,17 @@
+import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
+import Home from './pages'
 
 function App() {
   return (
-    <div className="text-3xl font-bold underline">
-      Add your pokemon here
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path='/'
+          element={<Home />}
+        />
+      </Routes>
+    </BrowserRouter>
   )
 }
 
