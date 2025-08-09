@@ -13,8 +13,11 @@ import { homePageConfig } from '@/lib/app-config'
 import InfiniteScroll from '@/components/home/infinite-scroll'
 
 export default function Home() {
-  const { currentControl, bgColor } = usePokemon()
-
+  const { currentControl, bgColor, listError } = usePokemon()
+  const ControlComponent =
+    currentControl === homePageConfig.PAGINATION_CTA.value
+      ? PaginationContainer
+      : InfiniteScroll
   return (
     <div className='min-h-screen' style={{ backgroundColor: bgColor }}>
       {/* Header */}
@@ -24,11 +27,7 @@ export default function Home() {
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
         <PokemonList />
-        {currentControl === homePageConfig.PAGINATION_CTA.value ? (
-          <PaginationContainer />
-        ) : (
-          <InfiniteScroll />
-        )}
+        {!listError && <ControlComponent />}
       </main>
     </div>
   )

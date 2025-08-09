@@ -9,9 +9,9 @@ interface ErrorMessageProps {
 
 export function ErrorMessage({ message, onRetry }: ErrorMessageProps) {
   return (
-    <Alert className="border-destructive/50 bg-destructive/5">
+    <Alert className="flex items-center justify-center border-destructive/50 bg-destructive/5">
+      <AlertDescription className="flex items-center">
       <AlertTriangle className="h-4 w-4 text-destructive" />
-      <AlertDescription className="flex items-center justify-between">
         <span className="text-destructive font-medium">{message}</span>
         {onRetry && (
           <Button 
