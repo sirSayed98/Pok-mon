@@ -10,7 +10,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useLocation, useSearchParams } from 'react-router-dom'
 
 interface PokemonContextType {
   listError: Error | null
@@ -44,6 +44,9 @@ interface PokemonProviderProps {
 }
 
 export function PokemonProvider({ children }: PokemonProviderProps) {
+  const pathname = useLocation().pathname
+  const isHomePage = pathname === '/'
+
   const [searchParams] = useSearchParams()
 
   // current page
@@ -76,6 +79,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
         appConfig.POKEMON_PER_PAGE,
         (currentPage - 1) * appConfig.POKEMON_PER_PAGE,
       ),
+    enabled: isHomePage,
   })
 
   // Get the pokemon details
@@ -91,7 +95,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
 
       return Promise.all(promises)
     },
-    enabled: !!listData?.results,
+    enabled: !!listData?.results && isHomePage,
   })
 
   // Handle infinite scroll accumulation
