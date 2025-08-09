@@ -3,16 +3,21 @@ import { getPokemon, getPokemonList } from '@/lib/fetch-pokemon'
 import type { Pokemon } from '@/lib/interfaces'
 import { getIdFromUrl } from '@/lib/pokemon-helpers'
 import { useQuery } from '@tanstack/react-query'
-import { createContext, useContext, useState, type ReactNode } from 'react'
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useState,
+  type ReactNode,
+} from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 interface PokemonContextType {
-  
   listError: Error | null
   refetchList: () => void
 
-  // Pokemon details
-  pokemonDetails: Pokemon[] | undefined
+  // Pokemon list
+  displayedPokemons: Pokemon[] | undefined
 
   // current page
   currentPage: number
@@ -42,11 +47,19 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
   const [currentPage, setCurrentPage] = useState(
     Number(searchParams.get('page')) || 1,
   )
-  
+
   // current control
   const [currentControl, setCurrentControl] = useState(
     searchParams.get('control') || homePageConfig.PAGINATION_CTA.value,
   )
+
+  // accumulated pokemon for infinite scroll
+  const [accumulatedPokemon, setAccumulatedPokemon] = useState<Pokemon[]>([])
+
+  // Reset accumulated pokemon when switching controls
+  useEffect(() => {
+    setAccumulatedPokemon([])
+  }, [currentControl])
 
   const {
     data: listData,
@@ -63,7 +76,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
   })
 
   // Get the pokemon details
-  const { data: pokemonDetails, isLoading: isDetailsLoading } = useQuery({
+  const { data: pokemonsListDetails, isLoading: isDetailsLoading } = useQuery({
     queryKey: ['pokemon-details', listData?.results],
     queryFn: async () => {
       if (!listData?.results) return []
@@ -78,16 +91,38 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
     enabled: !!listData?.results,
   })
 
+  // Handle infinite scroll accumulation
+  useEffect(() => {
+    if (
+      currentControl === homePageConfig.INFINITE_SCROLL_CTA.value &&
+      pokemonsListDetails
+    ) {
+      setAccumulatedPokemon(prev => {
+        const existingIds = new Set(prev.map(p => p.id))
+        const newPokemon = pokemonsListDetails.filter(
+          p => !existingIds.has(p.id),
+        )
+        return [...prev, ...newPokemon]
+      })
+    }
+  }, [pokemonsListDetails, currentControl])
+
   const totalPages = listData
     ? Math.ceil(listData.count / appConfig.POKEMON_PER_PAGE)
     : 0
 
   const isLoading = isListLoading || isDetailsLoading
 
+  // Determine which pokemon to display based on control type
+  const displayedPokemons =
+    currentControl === homePageConfig.INFINITE_SCROLL_CTA.value
+      ? accumulatedPokemon
+      : pokemonsListDetails
+
   const value: PokemonContextType = {
     listError,
     refetchList,
-    pokemonDetails,
+    displayedPokemons,
     isLoading,
     totalPages,
     // current page

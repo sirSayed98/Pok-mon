@@ -4,9 +4,10 @@ import { PokemonCard } from './pokemon-card'
 import { PokemonCardSkeleton } from './pokemon-card-skeleton'
 
 import { usePokemon } from '@/contexts/pokemon-context'
+import { homePageConfig } from '@/lib/app-config'
 
 export default function PokemonList() {
-  const { pokemonDetails, listError, refetchList, isLoading } = usePokemon()
+  const { displayedPokemons, listError, refetchList, isLoading, currentControl } = usePokemon()
 
   if (listError) {
     return (
@@ -21,7 +22,7 @@ export default function PokemonList() {
 
   return (
     <>
-      {isLoading ? (
+      {isLoading && currentControl === homePageConfig.PAGINATION_CTA.value ? (
         <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6 mb-8'>
           {Array.from({ length: 8 }).map((_, index) => (
             <PokemonCardSkeleton key={index} />
@@ -30,7 +31,7 @@ export default function PokemonList() {
       ) : (
         <>
           <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6 mb-8'>
-            {pokemonDetails?.map(pokemon => (
+            {displayedPokemons?.map(pokemon => (
               <PokemonCard
                 key={pokemon.id}
                 pokemon={pokemon}
