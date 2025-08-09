@@ -1,29 +1,42 @@
 import { Button } from '@/components/ui/button'
 import { Card } from '@/components/ui/card'
-import { AlertCircle } from 'lucide-react'
+import { AlertCircle, RefreshCw } from 'lucide-react'
 import { useNavigate } from 'react-router-dom'
 
 interface NotFoundPokemonProps {
   pokemonId?: string | number
+  onRetry?: () => void
 }
 
-export default function NotFoundPokemon({ pokemonId }: NotFoundPokemonProps) {
+export default function NotFoundPokemon({
+  pokemonId,
+  onRetry,
+}: NotFoundPokemonProps) {
   const navigate = useNavigate()
+
+  const handleReload = () => {
+    if (onRetry) {
+      onRetry()
+    } else {
+      window.location.reload()
+    }
+  }
 
   return (
     <main className='container mx-auto px-4 py-8'>
       <div className='max-w-2xl mx-auto'>
-        {/* Not Found Card */}
+        {/* Error/Not Found Card */}
         <Card className='overflow-hidden bg-white border-0 shadow-lg'>
           {/* Red Header */}
           <div className='bg-gradient-to-r from-red-600 to-red-500 text-white p-6 text-center'>
             <div className='flex items-center justify-center gap-3 mb-2'>
               <AlertCircle className='h-8 w-8' />
-              <h1 className='text-2xl font-bold'>Pokémon Not Found</h1>
+              <h1 className='text-2xl font-bold'>
+                Something went wrong while loading Pokemon
+              </h1>
             </div>
-            {pokemonId && (
-              <p className='text-red-100 font-medium'>ID: #{pokemonId}</p>
-            )}
+
+            <p className='text-red-100 font-medium'>ID: #{pokemonId}</p>
           </div>
 
           {/* Content */}
@@ -38,21 +51,25 @@ export default function NotFoundPokemon({ pokemonId }: NotFoundPokemonProps) {
 
             <div className='space-y-4'>
               <h2 className='text-xl font-semibold text-gray-900'>
-                Sorry, we couldn't find this Pokémon!
+                Oops! We encountered an error
               </h2>
               <p className='text-gray-600'>
-                {pokemonId
-                  ? `The Pokémon with ID #${pokemonId} doesn't exist in our database.`
-                  : "The requested Pokémon doesn't exist in our database."}
+                There was a problem loading the Pokemon data. Please try again.
               </p>
               <p className='text-sm text-gray-500'>
-                Please check the ID and try again, or browse our Pokémon
-                collection.
+                You can reload the page or browse our Pokemon collection.
               </p>
             </div>
 
             {/* Action Buttons */}
             <div className='flex flex-col sm:flex-row gap-3 justify-center mt-8'>
+              <Button
+                onClick={handleReload}
+                className='bg-green-600 hover:bg-green-700 flex items-center gap-2'
+              >
+                <RefreshCw className='h-4 w-4' />
+                Reload
+              </Button>
               <Button
                 onClick={() => navigate('/')}
                 className='bg-blue-600 hover:bg-blue-700'

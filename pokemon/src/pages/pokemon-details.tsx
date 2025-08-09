@@ -16,6 +16,7 @@ export default function PokemonDetail() {
     data: pokemon,
     isLoading,
     error,
+    refetch,
   } = useQuery({
     queryKey: ['pokemon-detail', id],
     queryFn: () => getPokemon(id!),
@@ -41,7 +42,7 @@ export default function PokemonDetail() {
   if (!pokemon || error) {
     return (
       <div className='min-h-screen bg-background'>
-        <NotFoundPokemon pokemonId={id} />
+        <NotFoundPokemon pokemonId={id} onRetry={() => refetch()} />
       </div>
     )
   }
