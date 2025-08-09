@@ -10,6 +10,8 @@ import {
 import { usePokemon } from '@/contexts/pokemon-context'
 import { cn } from '@/lib/utils'
 
+import { appConfig } from '@/lib/app-config'
+
 export function PaginationContainer() {
   const { currentPage, setCurrentPage, totalPages } = usePokemon()
 
@@ -20,7 +22,7 @@ export function PaginationContainer() {
   }
 
   return (
-    <div className='flex justify-center items-center w-full'>
+    <div className='flex flex-col gap-4 justify-center items-center w-full'>
       <Pagination>
         <PaginationContent>
           {/* previous */}
@@ -84,6 +86,10 @@ export function PaginationContainer() {
           </PaginationItem>
         </PaginationContent>
       </Pagination>
+      <p className='text-sm text-gray-500'>
+        Page {currentPage} of {totalPages} ({appConfig.POKEMON_PER_PAGE} Pokémon
+        shown)
+      </p>
     </div>
   )
 }
