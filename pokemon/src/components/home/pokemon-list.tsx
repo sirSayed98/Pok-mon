@@ -4,12 +4,17 @@ import { getPokemon, getPokemonList } from '@/lib/fetch-pokemon'
 import { getIdFromUrl } from '@/lib/pokemon-helpers'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
+import { PaginationContainer } from './pagination'
 import { PokemonCard } from './pokemon-card'
 import { PokemonCardSkeleton } from './pokemon-card-skeleton'
 
 export default function PokemonList() {
-  const [currentPage] = useState(1)
+  const [searchParams] = useSearchParams()
+  const page = searchParams.get('page')
+  const [currentPage, setCurrentPage] = useState(page ? Number(page) : 1)
 
+  // get the pokemon list
   const {
     data: listData,
     isLoading: isListLoading,
@@ -24,6 +29,7 @@ export default function PokemonList() {
       ),
   })
 
+  // get the pokemon details
   const { data: pokemonDetails, isLoading: isDetailsLoading } = useQuery({
     queryKey: ['pokemon-details', listData?.results],
     queryFn: async () => {
@@ -44,17 +50,20 @@ export default function PokemonList() {
     : 0
   const isLoading = isListLoading || isDetailsLoading
 
-  console.log(totalPages)
+  // handle page change
+  const handlePageChange = (page: number) => {
+    if (page === currentPage || page < 1 || page > totalPages) return
+    window.history.pushState(null, '', `?page=${page}`)
+    setCurrentPage(page)
+  }
 
   if (listError) {
     return (
-      <div className='min-h-screen bg-background p-4'>
-        <div className='container mx-auto max-w-4xl'>
-          <ErrorMessage
-            message='Failed to load Pokémon list. Please try again.'
-            onRetry={() => refetch()}
-          />
-        </div>
+      <div className='container mx-auto max-w-4xl'>
+        <ErrorMessage
+          message='Failed to load Pokémon list. Please try again.'
+          onRetry={() => refetch()}
+        />
       </div>
     )
   }
@@ -68,15 +77,24 @@ export default function PokemonList() {
           ))}
         </div>
       ) : (
-        <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6 mb-8'>
-          {pokemonDetails?.map(pokemon => (
-            <PokemonCard
-              key={pokemon.id}
-              pokemon={pokemon}
-              onClick={() => {}}
+        <>
+          <div className='grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4  gap-6 mb-8'>
+            {pokemonDetails?.map(pokemon => (
+              <PokemonCard
+                key={pokemon.id}
+                pokemon={pokemon}
+                onClick={() => {}}
+              />
+            ))}
+          </div>
+          <div className='flex justify-center items-center w-full'>
+            <PaginationContainer
+              totalPages={totalPages}
+              onPageChange={handlePageChange}
+              currentPage={currentPage}
             />
-          ))}
-        </div>
+          </div>
+        </>
       )}
     </>
   )
