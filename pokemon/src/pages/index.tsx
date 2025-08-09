@@ -1,6 +1,7 @@
 // ui-components
 import Controls from '@/components/home/controls'
 import Header from '@/components/home/header'
+import { PaginationContainer } from '@/components/home/pagination'
 import PokemonList from '@/components/home/pokemon-list'
 
 // constants
@@ -9,6 +10,8 @@ import { homePageConfig } from '@/lib/app-config'
 // react
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+
+import { PokemonProvider } from '@/contexts/pokemon-context'
 
 export default function Home() {
   const [searchParams] = useSearchParams()
@@ -33,7 +36,10 @@ export default function Home() {
 
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        <PokemonList />
+        <PokemonProvider>
+          <PokemonList />
+          <PaginationContainer />
+        </PokemonProvider>
       </main>
     </div>
   )
