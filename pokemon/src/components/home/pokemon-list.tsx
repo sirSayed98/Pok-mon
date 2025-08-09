@@ -1,4 +1,5 @@
 import { ErrorMessage } from '@/components/shared/ErrorMessage'
+import { useNavigate } from 'react-router-dom'
 
 import { PokemonCard } from './pokemon-card'
 import { PokemonCardSkeleton } from './pokemon-card-skeleton'
@@ -7,8 +8,14 @@ import { usePokemon } from '@/contexts/pokemon-context'
 import { homePageConfig } from '@/lib/app-config'
 
 export default function PokemonList() {
-  const { displayedPokemons, listError, refetchList, isLoading, currentControl } = usePokemon()
-
+  const {
+    displayedPokemons,
+    listError,
+    refetchList,
+    isLoading,
+    currentControl,
+  } = usePokemon()
+  const navigate = useNavigate()
   if (listError) {
     return (
       <div className='container mx-auto max-w-4xl'>
@@ -35,7 +42,9 @@ export default function PokemonList() {
               <PokemonCard
                 key={pokemon.id}
                 pokemon={pokemon}
-                onClick={() => {}}
+                onClick={() => {
+                  navigate(`/pokemon/${pokemon.id}`)
+                }}
               />
             ))}
           </div>

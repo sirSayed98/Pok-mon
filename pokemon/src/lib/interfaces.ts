@@ -22,6 +22,13 @@ export interface Pokemon {
       name: string;
     };
   }>;
+  abilities: Array<{
+    ability: {
+      name: string;
+    };
+    is_hidden: boolean;
+  }>;
+  base_experience: number;
 }
 
 export interface PokemonListResponse {
