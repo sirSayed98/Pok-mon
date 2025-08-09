@@ -1,6 +1,7 @@
 export const appConfig = {
   name: "Pokédex",
   description: "Discover and explore Pokémon with page controls",
+  POKEMON_PER_PAGE: 20,
 }
 
 export const homePageConfig = {

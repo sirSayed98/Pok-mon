@@ -1,6 +1,12 @@
+// ui-components
 import Controls from '@/components/home/controls'
 import Header from '@/components/home/header'
+import PokemonList from '@/components/home/pokemon-list'
+
+// constants
 import { homePageConfig } from '@/lib/app-config'
+
+// react
 import { useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
@@ -17,10 +23,7 @@ export default function Home() {
       : homePageConfig.INFINITE_SCROLL_CTA.bgColor
 
   return (
-    <div
-      className='min-h-screen'
-      style={{ backgroundColor: bgColor }}
-    >
+    <div className='min-h-screen' style={{ backgroundColor: bgColor }}>
       {/* Header */}
       <Header />
       <Controls
@@ -29,7 +32,9 @@ export default function Home() {
       />
 
       {/* Main Content */}
-      <main className='container mx-auto px-4 py-12'>// set list here</main>
+      <main className='container mx-auto px-4 py-8'>
+        <PokemonList />
+      </main>
     </div>
   )
 }
