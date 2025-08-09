@@ -16,6 +16,15 @@ export default function PokemonList() {
     currentControl,
   } = usePokemon()
   const navigate = useNavigate()
+
+  const handleClick = (id: number) => {
+    navigate(
+      currentControl
+        ? `/pokemon/${id}?control=${currentControl}`
+        : `/pokemon/${id}`,
+    )
+  }
+
   if (listError) {
     return (
       <div className='container mx-auto max-w-4xl'>
@@ -42,9 +51,7 @@ export default function PokemonList() {
               <PokemonCard
                 key={pokemon.id}
                 pokemon={pokemon}
-                onClick={() => {
-                  navigate(`/pokemon/${pokemon.id}`)
-                }}
+                onClick={() => handleClick(pokemon.id)}
               />
             ))}
           </div>

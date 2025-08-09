@@ -2,6 +2,7 @@ import { appConfig, homePageConfig } from '@/lib/app-config'
 import { getPokemon, getPokemonList } from '@/lib/fetch-pokemon'
 import type { Pokemon } from '@/lib/interfaces'
 import { getIdFromUrl } from '@/lib/pokemon-helpers'
+import { getBgColor, useGetCurrentControl } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import {
   createContext,
@@ -10,7 +11,7 @@ import {
   useState,
   type ReactNode,
 } from 'react'
-import { useLocation, useSearchParams } from 'react-router-dom'
+import { useSearchParams } from 'react-router-dom'
 
 interface PokemonContextType {
   listError: Error | null
@@ -44,10 +45,8 @@ interface PokemonProviderProps {
 }
 
 export function PokemonProvider({ children }: PokemonProviderProps) {
-  const pathname = useLocation().pathname
-  const isHomePage = pathname === '/'
-
   const [searchParams] = useSearchParams()
+  const control = useGetCurrentControl()
 
   // current page
   const [currentPage, setCurrentPage] = useState(
@@ -55,9 +54,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
   )
 
   // current control
-  const [currentControl, setCurrentControl] = useState(
-    searchParams.get('control') || homePageConfig.PAGINATION_CTA.value,
-  )
+  const [currentControl, setCurrentControl] = useState(control)
 
   // accumulated pokemon for infinite scroll
   const [accumulatedPokemon, setAccumulatedPokemon] = useState<Pokemon[]>([])
@@ -79,7 +76,6 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
         appConfig.POKEMON_PER_PAGE,
         (currentPage - 1) * appConfig.POKEMON_PER_PAGE,
       ),
-    enabled: isHomePage,
   })
 
   // Get the pokemon details
@@ -95,7 +91,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
 
       return Promise.all(promises)
     },
-    enabled: !!listData?.results && isHomePage,
+    enabled: !!listData?.results,
   })
 
   // Handle infinite scroll accumulation
@@ -126,10 +122,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
       ? accumulatedPokemon
       : pokemonsListDetails
 
-  const bgColor =
-      currentControl === homePageConfig.PAGINATION_CTA.value
-        ? homePageConfig.PAGINATION_CTA.bgColor
-        : homePageConfig.INFINITE_SCROLL_CTA.bgColor    
+  const bgColor = getBgColor(currentControl)
 
   const value: PokemonContextType = {
     listError,

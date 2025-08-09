@@ -1,16 +1,16 @@
 import NotFoundPokemon from '@/components/details/not-found-pokemon'
 import PokemonDetailsCard from '@/components/details/pokemon-details-card'
 import PokemonDetailsCardSkeleton from '@/components/details/pokemon-details-card-skeleton'
-import { usePokemon } from '@/contexts/pokemon-context'
 
 import { getPokemon } from '@/lib/fetch-pokemon'
+import { getBgColor, useGetCurrentControl } from '@/lib/utils'
 import { useQuery } from '@tanstack/react-query'
 import { useNavigate, useParams } from 'react-router-dom'
 
 export default function PokemonDetail() {
   const { id } = useParams<{ id: string }>()
   const navigate = useNavigate()
-  const { bgColor } = usePokemon()
+  const bgColor = getBgColor(useGetCurrentControl())
 
   const {
     data: pokemon,
