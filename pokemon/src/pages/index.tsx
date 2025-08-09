@@ -8,11 +8,12 @@ import PokemonList from '@/components/home/pokemon-list'
 import { usePokemon } from '@/contexts/pokemon-context'
 import { homePageConfig } from '@/lib/app-config'
 
+import { PokemonProvider } from '@/contexts/pokemon-context'
 // react
 
 import InfiniteScroll from '@/components/home/infinite-scroll'
 
-export default function Home() {
+const HomePageContainer = () => {
   const { currentControl, bgColor, listError } = usePokemon()
   const ControlComponent =
     currentControl === homePageConfig.PAGINATION_CTA.value
@@ -30,5 +31,13 @@ export default function Home() {
         {!listError && <ControlComponent />}
       </main>
     </div>
+  )
+}
+
+export default function Home() {
+  return (
+    <PokemonProvider>
+      <HomePageContainer />
+    </PokemonProvider>
   )
 }

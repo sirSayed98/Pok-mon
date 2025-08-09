@@ -1,4 +1,3 @@
-import { PokemonProvider } from '@/contexts/pokemon-context'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import './App.css'
@@ -11,12 +10,10 @@ function App() {
   return (
     <QueryClientProvider client={queryClient}>
       <BrowserRouter>
-        <PokemonProvider>
-          <Routes>
-            <Route path='/' element={<Home />} />
-            <Route path='/pokemon/:id' element={<PokemonDetails />} />
-          </Routes>
-        </PokemonProvider>
+        <Routes>
+          <Route path='/' element={<Home />} />
+          <Route path='/pokemon/:id' element={<PokemonDetails />} />
+        </Routes>
       </BrowserRouter>
     </QueryClientProvider>
   )
