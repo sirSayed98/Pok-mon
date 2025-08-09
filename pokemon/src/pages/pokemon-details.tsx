@@ -1,6 +1,7 @@
 import NotFoundPokemon from '@/components/details/not-found-pokemon'
 import PokemonDetailsCard from '@/components/details/pokemon-details-card'
 import PokemonDetailsCardSkeleton from '@/components/details/pokemon-details-card-skeleton'
+import { Button } from '@/components/ui/button'
 
 import { getPokemon } from '@/lib/fetch-pokemon'
 import { getBgColor, useGetCurrentControl } from '@/lib/utils'
@@ -49,6 +50,11 @@ export default function PokemonDetail() {
 
   return (
     <div className='min-h-screen' style={{ backgroundColor: bgColor }}>
+      <div className='container mx-auto px-4 py-8'>
+        <Button className='cursor-pointer' variant='outline' onClick={() => navigate('/')}>
+          Back to List
+        </Button>
+      </div>
       <PokemonDetailsCard pokemon={pokemon} />
     </div>
   )
