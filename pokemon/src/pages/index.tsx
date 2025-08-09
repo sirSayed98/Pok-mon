@@ -19,6 +19,9 @@ const HomePageContainer = () => {
     currentControl === homePageConfig.PAGINATION_CTA.value
       ? PaginationContainer
       : InfiniteScroll
+
+  document.title = 'Pokémon List'
+
   return (
     <div className='min-h-screen' style={{ backgroundColor: bgColor }}>
       {/* Header */}
