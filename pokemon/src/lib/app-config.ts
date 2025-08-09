@@ -5,7 +5,7 @@ export const appConfig = {
 }
 
 export const homePageConfig = {
-  PAGE_CONTROL_CTA: {
+  PAGINATION_CTA: {
     label: 'Page Controls',
     value: 'page-controls',
     bgColor: '#e9efff',

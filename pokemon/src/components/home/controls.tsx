@@ -1,33 +1,28 @@
 import { Button } from '@/components/ui/button'
 import { homePageConfig } from '@/lib/app-config'
 
+import { usePokemon } from '@/contexts/pokemon-context'
 
+export default function Controls() {
+  const { setCurrentPage, currentControl, setCurrentControl } = usePokemon()
 
-export default function Controls({
-  setCurrentControl,
-  currentControl,
-}: {
-  setCurrentControl: (control: string) => void
-  currentControl: string
-}) {
   const handleChangeControl = (control: string) => {
     setCurrentControl(control)
-    window.history.pushState(null, '', `?control=${control}`)
+    window.history.pushState(null, '', `?control=${control}&page=1`)
+    setCurrentPage(1)
   }
   return (
     <div className='flex items-center justify-center gap-4'>
       <Button
         className='cursor-pointer'
         variant={
-          currentControl === homePageConfig.PAGE_CONTROL_CTA.value
+          currentControl === homePageConfig.PAGINATION_CTA.value
             ? 'default'
             : 'secondary'
         }
-        onClick={() =>
-          handleChangeControl(homePageConfig.PAGE_CONTROL_CTA.value)
-        }
+        onClick={() => handleChangeControl(homePageConfig.PAGINATION_CTA.value)}
       >
-        {homePageConfig.PAGE_CONTROL_CTA.label}
+        {homePageConfig.PAGINATION_CTA.label}
       </Button>
       <Button
         className='cursor-pointer'

@@ -5,41 +5,35 @@ import { PaginationContainer } from '@/components/home/pagination'
 import PokemonList from '@/components/home/pokemon-list'
 
 // constants
+import { usePokemon } from '@/contexts/pokemon-context'
 import { homePageConfig } from '@/lib/app-config'
 
 // react
-import { useState } from 'react'
-import { useSearchParams } from 'react-router-dom'
 
-import { PokemonProvider } from '@/contexts/pokemon-context'
+import InfiniteScroll from '@/components/home/infinite-scroll'
 
 export default function Home() {
-  const [searchParams] = useSearchParams()
-  const control = searchParams.get('control')
-  const [currentControl, setCurrentControl] = useState<string>(
-    control ?? homePageConfig.PAGE_CONTROL_CTA.value,
-  )
+  const { currentControl } = usePokemon()
 
   const bgColor =
-    currentControl === homePageConfig.PAGE_CONTROL_CTA.value
-      ? homePageConfig.PAGE_CONTROL_CTA.bgColor
+    currentControl === homePageConfig.PAGINATION_CTA.value
+      ? homePageConfig.PAGINATION_CTA.bgColor
       : homePageConfig.INFINITE_SCROLL_CTA.bgColor
 
   return (
     <div className='min-h-screen' style={{ backgroundColor: bgColor }}>
       {/* Header */}
       <Header />
-      <Controls
-        setCurrentControl={setCurrentControl}
-        currentControl={currentControl}
-      />
+      <Controls />
 
       {/* Main Content */}
       <main className='container mx-auto px-4 py-8'>
-        <PokemonProvider>
-          <PokemonList />
+        <PokemonList />
+        {currentControl === homePageConfig.PAGINATION_CTA.value ? (
           <PaginationContainer />
-        </PokemonProvider>
+        ) : (
+          <InfiniteScroll />
+        )}
       </main>
     </div>
   )

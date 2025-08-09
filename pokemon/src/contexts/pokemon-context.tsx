@@ -1,4 +1,4 @@
-import { appConfig } from '@/lib/app-config'
+import { appConfig, homePageConfig } from '@/lib/app-config'
 import { getPokemon, getPokemonList } from '@/lib/fetch-pokemon'
 import type { Pokemon, PokemonListResponse } from '@/lib/interfaces'
 import { getIdFromUrl } from '@/lib/pokemon-helpers'
@@ -12,7 +12,7 @@ interface PokemonContextType {
   isListLoading: boolean
   listError: Error | null
   refetchList: () => void
-  
+
   // Pokemon details
   pokemonDetails: Pokemon[] | undefined
   isDetailsLoading: boolean
@@ -20,10 +20,14 @@ interface PokemonContextType {
   // current page
   currentPage: number
   setCurrentPage: (page: number) => void
-  
+
+  // current control
+  currentControl: string
+  setCurrentControl: (control: string) => void
+
   // Combined loading state
   isLoading: boolean
-  
+
   // Pagination
   totalPages: number
 }
@@ -36,9 +40,17 @@ interface PokemonProviderProps {
 
 export function PokemonProvider({ children }: PokemonProviderProps) {
   const [searchParams] = useSearchParams()
-  const [currentPage, setCurrentPage] = useState(Number(searchParams.get('page')) || 1)
+
+  // current page
+  const [currentPage, setCurrentPage] = useState(
+    Number(searchParams.get('page')) || 1,
+  )
   
-  // Get the pokemon list
+  // current control
+  const [currentControl, setCurrentControl] = useState(
+    searchParams.get('control') || homePageConfig.PAGINATION_CTA.value,
+  )
+
   const {
     data: listData,
     isLoading: isListLoading,
@@ -72,7 +84,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
   const totalPages = listData
     ? Math.ceil(listData.count / appConfig.POKEMON_PER_PAGE)
     : 0
-  
+
   const isLoading = isListLoading || isDetailsLoading
 
   const value: PokemonContextType = {
@@ -84,14 +96,16 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
     isDetailsLoading,
     isLoading,
     totalPages,
+    // current page
     currentPage,
     setCurrentPage,
+    // current control
+    currentControl,
+    setCurrentControl,
   }
 
   return (
-    <PokemonContext.Provider value={value}>
-      {children}
-    </PokemonContext.Provider>
+    <PokemonContext.Provider value={value}>{children}</PokemonContext.Provider>
   )
 }
 
