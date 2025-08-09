@@ -13,12 +13,7 @@ import { homePageConfig } from '@/lib/app-config'
 import InfiniteScroll from '@/components/home/infinite-scroll'
 
 export default function Home() {
-  const { currentControl } = usePokemon()
-
-  const bgColor =
-    currentControl === homePageConfig.PAGINATION_CTA.value
-      ? homePageConfig.PAGINATION_CTA.bgColor
-      : homePageConfig.INFINITE_SCROLL_CTA.bgColor
+  const { currentControl, bgColor } = usePokemon()
 
   return (
     <div className='min-h-screen' style={{ backgroundColor: bgColor }}>

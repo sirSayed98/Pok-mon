@@ -32,6 +32,9 @@ interface PokemonContextType {
 
   // Pagination
   totalPages: number
+
+  // background color
+  bgColor: string
 }
 
 const PokemonContext = createContext<PokemonContextType | undefined>(undefined)
@@ -119,6 +122,11 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
       ? accumulatedPokemon
       : pokemonsListDetails
 
+  const bgColor =
+      currentControl === homePageConfig.PAGINATION_CTA.value
+        ? homePageConfig.PAGINATION_CTA.bgColor
+        : homePageConfig.INFINITE_SCROLL_CTA.bgColor    
+
   const value: PokemonContextType = {
     listError,
     refetchList,
@@ -131,6 +139,7 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
     // current control
     currentControl,
     setCurrentControl,
+    bgColor,
   }
 
   return (
