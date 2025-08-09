@@ -1,21 +1,18 @@
 import { appConfig, homePageConfig } from '@/lib/app-config'
 import { getPokemon, getPokemonList } from '@/lib/fetch-pokemon'
-import type { Pokemon, PokemonListResponse } from '@/lib/interfaces'
+import type { Pokemon } from '@/lib/interfaces'
 import { getIdFromUrl } from '@/lib/pokemon-helpers'
 import { useQuery } from '@tanstack/react-query'
 import { createContext, useContext, useState, type ReactNode } from 'react'
 import { useSearchParams } from 'react-router-dom'
 
 interface PokemonContextType {
-  // List data
-  listData: PokemonListResponse | undefined
-  isListLoading: boolean
+  
   listError: Error | null
   refetchList: () => void
 
   // Pokemon details
   pokemonDetails: Pokemon[] | undefined
-  isDetailsLoading: boolean
 
   // current page
   currentPage: number
@@ -88,12 +85,9 @@ export function PokemonProvider({ children }: PokemonProviderProps) {
   const isLoading = isListLoading || isDetailsLoading
 
   const value: PokemonContextType = {
-    listData,
-    isListLoading,
     listError,
     refetchList,
     pokemonDetails,
-    isDetailsLoading,
     isLoading,
     totalPages,
     // current page
